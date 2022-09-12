@@ -1,9 +1,8 @@
 import {useState} from "react";
-import AutoSizer from "react-virtualized-auto-sizer";
-import Canvas from "../components/Canvas";
 import styles from '../styles/Home.module.css'
 import Confetti from "react-confetti";
 import useWindowSize from "react-use/lib/useWindowSize";
+import Wheel from "../components/Wheel";
 
 
 const nutriscoreToEmoji = {
@@ -24,6 +23,14 @@ function ShowConfetti({show, width, height}) {
     }</>)
 }
 
+const colors = ["#00823f", "#86bc2b", "#fecc00", "#ee8200", "#e73c09"];
+const texts = ["A", "B", "C", "D", "E"];
+const sectors = colors.map((c, i) => ({color: c, label: texts[i]}));
+const friction = 0.991; // 0.995=soft, 0.99=mid, 0.98=hard
+const angVelMin = 0.002; // Below that number will be treated as a stopconst
+const fontSize = '2rem';
+
+
 export default function Home() {
     const [result, setResult] = useState(null);
     const {widthWindow, height} = useWindowSize();
@@ -32,19 +39,14 @@ export default function Home() {
         setResult(res);
     }
 
-
     return (
         <>
             <h1 className={styles.title}>🍏 Nutriscore Challenge 🍕</h1>
-            <div
-                className="chartContainer"
-            >
-                <AutoSizer disableHeight>
-                    {({width}) => (
-                        <Canvas width={width} onFinish={onFinish} height={canvasHeight}/>
-                    )}
-                </AutoSizer>
-            </div>
+            <Wheel size={canvasHeight}
+                   friction={friction}
+                   angVelMin={angVelMin}
+                   fontSize={fontSize}
+                   sectors={sectors} className={"chartContainer"} onFinish={onFinish}/>
             <ShowConfetti key={result && result.label} show={result} height={height} width={widthWindow}/>
             {result && <h1 className={styles.description}> Your nutriscore
                 is {result.label} {nutriscoreToEmoji[result.label]}!</h1>}

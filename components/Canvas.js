@@ -1,10 +1,7 @@
 import {useEffect, useRef, useState} from "react";
 
-const colors = ["#00823f", "#86bc2b", "#fecc00", "#ee8200", "#e73c09"];
-const texts = ["A", "B", "C", "D", "E"];
 
-const sectors = colors.map((c, i) => ({color: c, label: texts[i]}));
-const spinStyle = {
+/*const spinStyle = {
     font: "1.1rem/0 sans-serif",
     userSelect: "none",
     cursor: "pointer",
@@ -22,13 +19,11 @@ const spinStyle = {
     boxShadow: "0 0 0 8px currentColor, 0 0px 15px 5px rgba(0, 0, 0, 0.6)",
     borderRadius: "50%",
     transition: "0.4s"
-};
-const friction = 0.991; // 0.995=soft, 0.99=mid, 0.98=hard
-const angVelMin = 0.002; // Below that number will be treated as a stop
-const rand = (m, M) => Math.random() * (M - m) + m;
-const fontSize = '2rem';
+};*/
 
-export default function Canvas({width, height, onFinish, runOnlyOnce}) {
+const rand = (m, M) => Math.random() * (M - m) + m;
+
+export default function Canvas({width, height, onFinish, runOnlyOnce, sectors, friction, angVelMin, fontSize}) {
     const canvasRef = useRef(null);
     const spinRef = useRef(null);
     const angleRef = useRef(0);
@@ -136,7 +131,7 @@ export default function Canvas({width, height, onFinish, runOnlyOnce}) {
         return () => {
             cancelAnimationFrame(raf);
         };
-    }, [width, height, isSpinning, onFinish]);
+    }, [width, height, isSpinning, onFinish, sectors, fontSize, angVelMin, friction]);
 
     return (
         <>
