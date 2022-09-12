@@ -28,7 +28,7 @@ const angVelMin = 0.002; // Below that number will be treated as a stop
 const rand = (m, M) => Math.random() * (M - m) + m;
 const fontSize = '2rem';
 
-export default function Canvas({width, height, onFinish}) {
+export default function Canvas({width, height, onFinish, runOnlyOnce}) {
     const canvasRef = useRef(null);
     const spinRef = useRef(null);
     const angleRef = useRef(0);
@@ -48,7 +48,6 @@ export default function Canvas({width, height, onFinish}) {
 
         const ctx = canvas.getContext("2d");
         ctx.scale(scale, scale);
-        // Generate random float in range min-max:
 
         const tot = sectors.length;
         const elSpin = spinRef.current;
@@ -57,10 +56,6 @@ export default function Canvas({width, height, onFinish}) {
         const TAU = 2 * PI;
         const arc = TAU / sectors.length;
 
-        //const angVelMax = rand(0.25, 0.4); // Random ang.vel. to acceletare to
-        //let angVel = 0; // Current angular velocity
-        //let ang = 0; // Angle rotation in radians
-        //let isAccelerating = true;
         let raf;
         //* Get index of current sector */
         const getIndex = () =>
@@ -135,7 +130,6 @@ export default function Canvas({width, height, onFinish}) {
 
         // INIT!
         sectors.forEach(drawSector);
-        //drawInnerCircle();
         rotate(); // Initial rotation
         engine(); // Start engine!
 
@@ -155,11 +149,10 @@ export default function Canvas({width, height, onFinish}) {
                 }}
             >
                 <canvas id="wheel" ref={canvasRef}/>
-
                 <button
                     id="spin"
                     ref={spinRef}
-                    disabled={isSpinning || hasRunOnce}
+                    disabled={isSpinning || (runOnlyOnce && hasRunOnce)}
                     onClick={() => {
                         setIsSpinning(true);
                         setHasRunOne(true);
