@@ -15,6 +15,52 @@ a {
   box-sizing: border-box;
 }
 
+#wheel {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#spin {
+    font: 1rem/0 sans-serif;
+    user-select: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50px;
+    height: 50px;
+    background: #fff;
+    color: #fff;
+    box-shadow: 0 0 0 8px currentColor, 0 0 15px 5px rgba(0, 0, 0, 0.6);
+    border-radius: 50%;
+    transition: 0.8s;
+    transform: translate(-50%, -50%);
+}
+
+#spin::after {
+    content: "";
+    position: absolute;
+    top: -17px;
+    border: 10px solid transparent;
+    border-bottom-color: currentColor;
+    border-top: none;
+}
+
+#spin:disabled {
+    opacity: 0.6;
+}
+
+.chartContainer {
+    padding: 10px;
+}
+
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
