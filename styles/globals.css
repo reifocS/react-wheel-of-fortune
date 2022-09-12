@@ -23,7 +23,6 @@ a {
 }
 
 #spin {
-    font: 1rem/0 sans-serif;
     user-select: none;
     cursor: pointer;
     display: flex;

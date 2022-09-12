@@ -28,7 +28,7 @@ const texts = ["A", "B", "C", "D", "E"];
 const sectors = colors.map((c, i) => ({color: c, label: texts[i]}));
 const friction = 0.991; // 0.995=soft, 0.99=mid, 0.98=hard
 const angVelMin = 0.002; // Below that number will be treated as a stopconst
-const fontSize = '2rem';
+const fontSize = '1rem';
 
 
 export default function Home() {
@@ -46,6 +46,9 @@ export default function Home() {
                    friction={friction}
                    angVelMin={angVelMin}
                    fontSize={fontSize}
+                   spinFontSize={'1rem'}
+                   centerText={"SPIN"}
+                   changeTextCenter={true}
                    sectors={sectors} className={"chartContainer"} onFinish={onFinish}/>
             <ShowConfetti key={result && result.label} show={result} height={height} width={widthWindow}/>
             {result && <h1 className={styles.description}> Your nutriscore

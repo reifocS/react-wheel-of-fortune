@@ -23,7 +23,19 @@ import {useEffect, useRef, useState} from "react";
 
 const rand = (m, M) => Math.random() * (M - m) + m;
 
-export default function Canvas({width, height, onFinish, runOnlyOnce, sectors, friction, angVelMin, fontSize}) {
+export default function Canvas({
+                                   width,
+                                   height,
+                                   onFinish,
+                                   runOnlyOnce,
+                                   sectors,
+                                   friction,
+                                   angVelMin,
+                                   fontSize,
+                                   centerText,
+                                   spinFontSize,
+                                   changeTextCenter
+                               }) {
     const canvasRef = useRef(null);
     const spinRef = useRef(null);
     const angleRef = useRef(0);
@@ -84,7 +96,10 @@ export default function Canvas({width, height, onFinish, runOnlyOnce, sectors, f
             ctx.canvas.style.transform = `translate(-50%, -50%) rotate(${
                 angleRef.current - PI / 2
             }rad)`;
-            elSpin.textContent = !angleVelRef.current ? "SPIN" : sector.label;
+            if (changeTextCenter) {
+                elSpin.textContent = !angleVelRef.current ? centerText : sector.label;
+                elSpin.style.fontSize = spinFontSize;
+            }
             elSpin.style.background = sector.color;
         };
 
@@ -131,7 +146,7 @@ export default function Canvas({width, height, onFinish, runOnlyOnce, sectors, f
         return () => {
             cancelAnimationFrame(raf);
         };
-    }, [width, height, isSpinning, onFinish, sectors, fontSize, angVelMin, friction]);
+    }, [width, height, isSpinning, onFinish, sectors, fontSize, angVelMin, friction, centerText, spinFontSize]);
 
     return (
         <>
@@ -147,6 +162,9 @@ export default function Canvas({width, height, onFinish, runOnlyOnce, sectors, f
                 <button
                     id="spin"
                     ref={spinRef}
+                    style={{
+                        fontSize: {spinFontSize}
+                    }}
                     disabled={isSpinning || (runOnlyOnce && hasRunOnce)}
                     onClick={() => {
                         setIsSpinning(true);
@@ -155,7 +173,7 @@ export default function Canvas({width, height, onFinish, runOnlyOnce, sectors, f
                         isAcceleratingRef.current = true;
                     }}
                 >
-                    SPIN
+                    {centerText}
                 </button>
             </div>
         </>
