@@ -13,6 +13,7 @@ export default function Canvas({
                                    fontSize,
                                    centerText,
                                    spinFontSize,
+                                   fontFamily = "arial",
                                    changeTextCenter = true,
                                    spinSize = 50
                                }) {
@@ -24,6 +25,7 @@ export default function Canvas({
     const isAcceleratingRef = useRef(false);
     const [isSpinning, setIsSpinning] = useState(false);
     const [hasRunOnce, setHasRunOne] = useState(false);
+
     useEffect(() => {
         const canvas = canvasRef.current;
         const scale = window.devicePixelRatio;
@@ -64,7 +66,7 @@ export default function Canvas({
             ctx.rotate(ang + arc / 2);
             ctx.textAlign = "right";
             ctx.fillStyle = "#fff";
-            ctx.font = `bold ${fontSize} sans-serif`;
+            ctx.font = `bold ${fontSize} ${fontFamily}`;
             ctx.fillText(sector.label, rad - 10, 10);
             //
             ctx.restore();
@@ -128,14 +130,14 @@ export default function Canvas({
         return () => {
             cancelAnimationFrame(raf);
         };
-    }, [width, height, isSpinning, onFinish, sectors, fontSize, angVelMin, friction, centerText, spinFontSize, changeTextCenter, spinSize]);
+    }, [width, height, isSpinning, onFinish, sectors, fontSize, angVelMin, friction, centerText, spinFontSize, changeTextCenter, spinSize, fontFamily]);
 
     return (
         <>
             <div
                 style={{
                     width,
-                    height,
+                    height: Math.min(height, width),
                     position: "relative",
                     overflow: "hidden"
                 }}

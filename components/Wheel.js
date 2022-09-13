@@ -13,12 +13,14 @@ export default function Wheel({
                                   fontSize,
                                   centerText,
                                   runOnlyOnce,
-                                  spinSize
+                                  spinSize,
+                                  fixedContainerWidth
                               }) {
 
     return <div className={className}><AutoSizer disableHeight>
         {({width}) => (
-            <Canvas width={width} onFinish={onFinish} height={size} sectors={sectors} friction={friction}
+            <Canvas width={fixedContainerWidth ?? width} onFinish={onFinish} height={size} sectors={sectors}
+                    friction={friction}
                     angVelMin={angVelMin}
                     fontSize={fontSize}
                     centerText={centerText}
