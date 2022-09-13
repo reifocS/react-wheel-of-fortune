@@ -5,7 +5,7 @@ import useWindowSize from "react-use/lib/useWindowSize";
 import Wheel from "../components/Wheel";
 
 function guidGenerator() {
-    var S4 = function () {
+    let S4 = function () {
         return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
     };
     return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
@@ -30,9 +30,9 @@ function ShowConfetti({show, width, height}) {
 }
 
 function getRandomColor() {
-    var letters = '0123456789ABCDEF';
-    var color = '#';
-    for (var i = 0; i < 6; i++) {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
         color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
@@ -59,6 +59,7 @@ export default function Home() {
     const [wheelSize, setWheelSize] = useState(canvasHeight);
     const [changeTextCenter, setChangeTextCenter] = useState(true);
     const [responsiveC, setResponsiveC] = useState(true);
+    const [runOnlyOnce, setRunOnlyOnce] = useState(true);
     const [sectors, setSectors] = useState(SECTORS);
 
     function onFinish(res) {
@@ -84,7 +85,7 @@ export default function Home() {
 
     return (
         <>
-            <h1 className={styles.title}>Nutriscore Challenge 🍏 🍕</h1>
+            <h1 className={styles.title}>React awesome wheel!</h1>
             <div style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
                 <div style={{
                     display: "flex",
@@ -114,17 +115,17 @@ export default function Home() {
                            onChange={(e) => setSpinSize(+e.target.value)}/>
                     <input placeholder={"center text"} type={"text"} value={centerText}
                            onChange={(e) => setCenter(e.target.value)}/>
-                    <input placeholder={"change text"} type={"checkbox"} value={changeTextCenter}
+                    <input placeholder={"change text"} type={"checkbox"} checked={changeTextCenter}
                            onChange={(e) => setChangeTextCenter(e.target.checked)}/>
-                    <input placeholder={"responsive container"} type={"checkbox"} value={responsiveC}
+                    <input placeholder={"responsive container"} type={"checkbox"} checked={responsiveC}
                            onChange={(e) => setResponsiveC(e.target.checked)}/>
-                </div>
-                <div>
+                    <input placeholder={"responsive container"} type={"checkbox"} checked={runOnlyOnce}
+                           onChange={(e) => setRunOnlyOnce(e.target.checked)}/>
                     <ul>
                         {sectors.map(s => <li key={s.id}><input
                             onChange={(e) => updateSector(e.target.value, s.id)}
                             value={s.label}/>
-                            <button onClick={() => deleteSector(s.id)}>X</button>
+                            <button disabled={sectors.length === 1} onClick={() => deleteSector(s.id)}>X</button>
                         </li>)}
                         <li>
                             <form style={{display: "inline"}} onSubmit={(e) => addSector(e)}>
@@ -134,21 +135,24 @@ export default function Home() {
                         </li>
                     </ul>
                 </div>
-                <Wheel size={wheelSize}
-                       friction={friction}
-                       angVelMin={angVelMin}
-                       fontSize={fontSize}
-                       spinFontSize={'1rem'}
-                       fixedContainerWidth={responsiveC ? undefined : wheelSize}
-                       centerText={centerText}
-                       changeTextCenter={changeTextCenter}
-                       spinSize={spinSize}
-                       sectors={sectors} className={"chartContainer"} onFinish={onFinish}/>
+                <div style={{flexGrow: 1}}>
+                    <Wheel size={wheelSize}
+                           friction={friction}
+                           angVelMin={angVelMin}
+                           fontSize={fontSize}
+                           spinFontSize={'1rem'}
+                           fixedContainerWidth={responsiveC ? undefined : wheelSize}
+                           centerText={centerText}
+                           changeTextCenter={changeTextCenter}
+                           spinSize={spinSize}
+                           runOnlyOnce={runOnlyOnce}
+                           sectors={sectors} onFinish={onFinish}/>
+                </div>
                 <ShowConfetti key={result && result.label} show={result} height={height} width={widthWindow}/>
 
             </div>
-            {result && <h1 className={styles.description}> Your nutriscore
-                is {result.label} {nutriscoreToEmoji[result.label]}!</h1>}
+            {result && <h1 className={styles.description}> Your won
+                a {result.label} {nutriscoreToEmoji[result.label]}!</h1>}
         </>
     )
 }

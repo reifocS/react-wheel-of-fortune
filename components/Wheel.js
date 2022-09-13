@@ -6,7 +6,6 @@ export default function Wheel({
                                   size,
                                   spinFontSize,
                                   onFinish,
-                                  className,
                                   sectors,
                                   friction,
                                   angVelMin,
@@ -17,7 +16,7 @@ export default function Wheel({
                                   fixedContainerWidth
                               }) {
 
-    return <div className={className}><AutoSizer disableHeight>
+    return <AutoSizer disableHeight>
         {({width}) => (
             <Canvas width={fixedContainerWidth ?? width} onFinish={onFinish} height={size} sectors={sectors}
                     friction={friction}
@@ -30,5 +29,5 @@ export default function Wheel({
                     spinSize={spinSize}
             />
         )}
-    </AutoSizer></div>
+    </AutoSizer>
 }

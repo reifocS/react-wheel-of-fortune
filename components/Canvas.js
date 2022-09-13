@@ -11,11 +11,14 @@ export default function Canvas({
                                    friction,
                                    angVelMin,
                                    fontSize,
+                                   textAlign = "right",
+                                   innerFontColor = "white",
                                    centerText,
                                    spinFontSize,
                                    fontFamily = "arial",
+                                   fontColor = "white",
                                    changeTextCenter = true,
-                                   spinSize = 50
+                                   spinSize = 50,
                                }) {
     const canvasRef = useRef(null);
     const spinRef = useRef(null);
@@ -64,8 +67,8 @@ export default function Canvas({
             // TEXT
             ctx.translate(rad, rad);
             ctx.rotate(ang + arc / 2);
-            ctx.textAlign = "right";
-            ctx.fillStyle = "#fff";
+            ctx.textAlign = textAlign;
+            ctx.fillStyle = fontColor;
             ctx.font = `bold ${fontSize} ${fontFamily}`;
             ctx.fillText(sector.label, rad - 10, 10);
             //
@@ -84,6 +87,7 @@ export default function Canvas({
             }
             elSpin.style.height = spinSize + "px";
             elSpin.style.width = spinSize + "px";
+            elSpin.style.color = innerFontColor;
             elSpin.style.background = sector.color;
         };
 
@@ -130,7 +134,7 @@ export default function Canvas({
         return () => {
             cancelAnimationFrame(raf);
         };
-    }, [width, height, isSpinning, onFinish, sectors, fontSize, angVelMin, friction, centerText, spinFontSize, changeTextCenter, spinSize, fontFamily]);
+    }, [width, height, isSpinning, onFinish, sectors, fontSize, angVelMin, friction, centerText, spinFontSize, changeTextCenter, spinSize, fontFamily, textAlign, fontColor, innerFontColor, runOnlyOnce]);
 
     return (
         <>
@@ -139,13 +143,16 @@ export default function Canvas({
                     width,
                     height: Math.min(height, width),
                     position: "relative",
-                    overflow: "hidden"
+                    overflow: "hidden",
                 }}
             >
                 <canvas id="wheel" ref={canvasRef}/>
                 <button
                     id="spin"
                     ref={spinRef}
+                    style={{
+                        cursor: runOnlyOnce && hasRunOnce ? 'not-allowed' : 'pointer'
+                    }}
                     disabled={isSpinning || (runOnlyOnce && hasRunOnce)}
                     onClick={() => {
                         setIsSpinning(true);
