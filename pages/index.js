@@ -1,6 +1,5 @@
 import {useState} from "react";
 import styles from '../styles/Home.module.css'
-import Confetti from "react-confetti";
 import useWindowSize from "react-use/lib/useWindowSize";
 import Wheel from "../components/Wheel";
 
@@ -15,19 +14,6 @@ const nutriscoreToEmoji = {
     "A": '🍏', "B": '🍝', "C": '🌮', "D": '🍕', "E": '💩'
 }
 const canvasHeight = 300;
-
-function ShowConfetti({show, width, height}) {
-    return (<>{
-        show ? (
-            <Confetti
-                numberOfPieces={300}
-                recycle={false}
-                width={width}
-                height={height}
-            />
-        ) : null
-    }</>)
-}
 
 function getRandomColor() {
     const letters = '0123456789ABCDEF';
@@ -148,7 +134,6 @@ export default function Home() {
                            runOnlyOnce={runOnlyOnce}
                            sectors={sectors} onFinish={onFinish}/>
                 </div>
-                <ShowConfetti key={result && result.label} show={result} height={height} width={widthWindow}/>
 
             </div>
             {result && <h1 className={styles.description}> Your won
