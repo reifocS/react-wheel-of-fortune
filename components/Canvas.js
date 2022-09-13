@@ -1,26 +1,5 @@
 import {useEffect, useRef, useState} from "react";
 
-
-/*const spinStyle = {
-    font: "1.1rem/0 sans-serif",
-    userSelect: "none",
-    cursor: "pointer",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    width: "20%",
-    height: "20%",
-    margin: "-10%",
-    background: "#fff",
-    color: "#fff",
-    boxShadow: "0 0 0 8px currentColor, 0 0px 15px 5px rgba(0, 0, 0, 0.6)",
-    borderRadius: "50%",
-    transition: "0.4s"
-};*/
-
 const rand = (m, M) => Math.random() * (M - m) + m;
 
 export default function Canvas({
@@ -34,7 +13,8 @@ export default function Canvas({
                                    fontSize,
                                    centerText,
                                    spinFontSize,
-                                   changeTextCenter
+                                   changeTextCenter = true,
+                                   spinSize = 50
                                }) {
     const canvasRef = useRef(null);
     const spinRef = useRef(null);
@@ -100,6 +80,8 @@ export default function Canvas({
                 elSpin.textContent = !angleVelRef.current ? centerText : sector.label;
                 elSpin.style.fontSize = spinFontSize;
             }
+            elSpin.style.height = spinSize + "px";
+            elSpin.style.width = spinSize + "px";
             elSpin.style.background = sector.color;
         };
 
@@ -146,7 +128,7 @@ export default function Canvas({
         return () => {
             cancelAnimationFrame(raf);
         };
-    }, [width, height, isSpinning, onFinish, sectors, fontSize, angVelMin, friction, centerText, spinFontSize]);
+    }, [width, height, isSpinning, onFinish, sectors, fontSize, angVelMin, friction, centerText, spinFontSize, changeTextCenter, spinSize]);
 
     return (
         <>
@@ -162,9 +144,6 @@ export default function Canvas({
                 <button
                     id="spin"
                     ref={spinRef}
-                    style={{
-                        fontSize: {spinFontSize}
-                    }}
                     disabled={isSpinning || (runOnlyOnce && hasRunOnce)}
                     onClick={() => {
                         setIsSpinning(true);

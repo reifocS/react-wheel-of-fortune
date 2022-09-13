@@ -41,7 +41,7 @@ export default function Home() {
 
     return (
         <>
-            <h1 className={styles.title}>🍏 Nutriscore Challenge 🍕</h1>
+            <h1 className={styles.title}>Nutriscore Challenge 🍏 🍕</h1>
             <Wheel size={canvasHeight}
                    friction={friction}
                    angVelMin={angVelMin}
@@ -49,6 +49,7 @@ export default function Home() {
                    spinFontSize={'1rem'}
                    centerText={"SPIN"}
                    changeTextCenter={true}
+                   spinSize={70}
                    sectors={sectors} className={"chartContainer"} onFinish={onFinish}/>
             <ShowConfetti key={result && result.label} show={result} height={height} width={widthWindow}/>
             {result && <h1 className={styles.description}> Your nutriscore

@@ -12,7 +12,8 @@ export default function Wheel({
                                   angVelMin,
                                   fontSize,
                                   centerText,
-                                  runOnlyOnce
+                                  runOnlyOnce,
+                                  spinSize
                               }) {
 
     return <div className={className}><AutoSizer disableHeight>
@@ -24,6 +25,7 @@ export default function Wheel({
                     runOnlyOnce={runOnlyOnce}
                     spinFontSize={spinFontSize}
                     changeTextCenter={changeTextCenter}
+                    spinSize={spinSize}
             />
         )}
     </AutoSizer></div>
