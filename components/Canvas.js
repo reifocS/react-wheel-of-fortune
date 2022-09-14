@@ -157,7 +157,7 @@ export default function Canvas({
                     onClick={() => {
                         setIsSpinning(true);
                         setHasRunOne(true);
-                        angVelMaxRef.current = rand(0.15, 0.15);
+                        angVelMaxRef.current = rand(0.15, 0.7);
                         isAcceleratingRef.current = true;
                     }}
                 >
