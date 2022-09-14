@@ -1,6 +1,5 @@
 import {useState} from "react";
 import styles from '../styles/Home.module.css'
-import useWindowSize from "react-use/lib/useWindowSize";
 import Wheel from "../components/Wheel";
 
 function guidGenerator() {
@@ -23,24 +22,22 @@ function getRandomColor() {
     }
     return color;
 }
-
 const colors = ["#00823f", "#86bc2b", "#fecc00", "#ee8200", "#e73c09"];
 const texts = ["Nutri A", "Nutri B", "Nutri C", "Nutri D", "Nutri E"];
 const SECTORS = colors.map((c, i) => ({color: c, label: texts[i], id: guidGenerator()}));
 const FRICTION = 0.991; // 0.995=soft, 0.99=mid, 0.98=hard
 const ANGVELMIN = 0.002; // Below that number will be treated as a stopconst
 const FONTSIZE = '1.5rem';
-const fontSizes = ["1rem", "1.5rem", '2rem', "2.5rem", "3rem"];
+const fontSizes = ["0.5rem", "1rem", "1.5rem", '2rem', "2.5rem", "3rem"];
 
 const frictions = [{type: "soft", value: 0.995}, {type: "mid", value: 0.991}, {type: "hard", value: 0.98}]
 
 export default function Home() {
-    const [result, setResult] = useState(null);
-    const {widthWindow, height} = useWindowSize();
     const [friction, setFriction] = useState(FRICTION);
     const [angVelMin] = useState(ANGVELMIN);
     const [centerText, setCenter] = useState("SPIN");
     const [fontSize, setFontSize] = useState(FONTSIZE);
+    const [spinFontSize, setSpinFontSize] = useState("1rem");
     const [spinSize, setSpinSize] = useState(50);
     const [wheelSize, setWheelSize] = useState(canvasHeight);
     const [changeTextCenter, setChangeTextCenter] = useState(true);
@@ -49,7 +46,7 @@ export default function Home() {
     const [sectors, setSectors] = useState(SECTORS);
 
     function onFinish(res) {
-        setResult(res);
+        alert(res.label);
     }
 
     function updateSector(label, id) {
@@ -77,45 +74,79 @@ export default function Home() {
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "center",
-                    alignItems: "center"
+                    alignItems: "center",
+                    padding: 10,
+                    gap: 2
                 }}>
-                    {/*<input placeholder={"friction"} type={"number"} value={friction}
-                       onChange={(e) => setFriction(e.target.value)}/>
-                <input placeholder={"angle Velocity Min"} type={"number"} value={angVelMin}
-                       onChange={(e) => setAngVelMin(e.target.value)}/>*/}
+                    <label htmlFor={"friction"}>friction</label>
                     <select value={friction}
+                            id={"friction"}
                             onChange={(e) => setFriction(e.target.value)}>
                         {frictions.map((f, i) => <option
                             value={f.value}
                             key={i}>{f.type}</option>)}
                     </select>
+                    <label htmlFor={"fontSize"}>sectors font size</label>
+
                     <select value={fontSize}
+                            id={"fontSize"}
                             onChange={(e) => setFontSize(e.target.value)}>
                         {fontSizes.map((f, i) => <option
                             value={f}
                             key={i}>{f}</option>)}
                     </select>
-                    <input min={100} placeholder={"wheel size"} type={"number"} value={wheelSize}
+
+                    <label htmlFor={"spinFontSize"}>spinner font size</label>
+
+                    <select id={"spinFontSize"} value={spinFontSize}
+                            onChange={(e) => setSpinFontSize(e.target.value)}>
+                        {fontSizes.map((f, i) => <option
+                            value={f}
+                            key={i}>{f}</option>)}
+                    </select>
+                    <label htmlFor={"wheelSize"}>Wheel radius</label>
+                    <input min={100}
+                           max={1000}
+                           placeholder={"wheel size"}
+                           type={"range"}
+                           value={wheelSize}
                            onChange={(e) => setWheelSize(+e.target.value)}/>
-                    <input min={50} max={wheelSize} placeholder={"spin size"} type={"number"} value={spinSize}
+                    <label htmlFor={"spinSize"}>Center radius</label>
+                    <input min={50}
+                           max={wheelSize}
+                           id={"spinSize"}
+                           placeholder={"spin size"}
+                           type={"range"}
+                           value={spinSize}
                            onChange={(e) => setSpinSize(+e.target.value)}/>
-                    <input placeholder={"center text"} type={"text"} value={centerText}
+                    <label htmlFor={"textCenter"}>Center Text</label>
+                    <input placeholder={"center text"}
+                           id={"textCenter"}
+                           type={"text"} value={centerText}
                            onChange={(e) => setCenter(e.target.value)}/>
-                    <input placeholder={"change text"} type={"checkbox"} checked={changeTextCenter}
+                    <label htmlFor={"changeTextCenter"}>Change text center on spin</label>
+                    <input id={"changeTextCenter"} placeholder={"change text"} type={"checkbox"} checked={changeTextCenter}
                            onChange={(e) => setChangeTextCenter(e.target.checked)}/>
-                    <input placeholder={"responsive container"} type={"checkbox"} checked={responsiveC}
+                    <label htmlFor={"responsiveWheel"}>Responsive wheel</label>
+                    <input id={"responsiveWheel"} placeholder={"responsive container"} type={"checkbox"} checked={responsiveC}
                            onChange={(e) => setResponsiveC(e.target.checked)}/>
-                    <input placeholder={"responsive container"} type={"checkbox"} checked={runOnlyOnce}
+                    <label htmlFor={"runOnlyOnce"}>Run only once</label>
+                    <input id={"runOnlyOnce"} placeholder={"responsive container"} type={"checkbox"} checked={runOnlyOnce}
                            onChange={(e) => setRunOnlyOnce(e.target.checked)}/>
-                    <ul>
-                        {sectors.map(s => <li key={s.id}><input
+                    <ul style={{backgroundColor: "gray",
+                        listStyle: "none",
+                        borderRadius: 6, padding: 4}}>
+                        <label htmlFor={sectors[0].label + '0'}>Sectors</label>
+                        {sectors.map((s, i) => <li key={s.id}><input
+                            id={s.label+i}
+                            style={{maxWidth: 100}}
                             onChange={(e) => updateSector(e.target.value, s.id)}
                             value={s.label}/>
                             <button disabled={sectors.length === 1} onClick={() => deleteSector(s.id)}>X</button>
                         </li>)}
                         <li>
                             <form style={{display: "inline"}} onSubmit={(e) => addSector(e)}>
-                                <input required name="newSector"/>
+                                <input style={{maxWidth: 100}} required name="newSector"/>
                                 <button>+</button>
                             </form>
                         </li>
@@ -126,7 +157,7 @@ export default function Home() {
                            friction={friction}
                            angVelMin={angVelMin}
                            fontSize={fontSize}
-                           spinFontSize={'1rem'}
+                           spinFontSize={spinFontSize}
                            fixedContainerWidth={responsiveC ? undefined : wheelSize}
                            centerText={centerText}
                            changeTextCenter={changeTextCenter}
@@ -136,8 +167,6 @@ export default function Home() {
                 </div>
 
             </div>
-            {result && <h1 className={styles.description}> Your won
-                a {result.label} {nutriscoreToEmoji[result.label]}!</h1>}
         </>
     )
 }
