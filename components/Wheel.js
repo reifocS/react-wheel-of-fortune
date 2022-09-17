@@ -6,19 +6,21 @@ export default function Wheel({
                                   size,
                                   spinFontSize,
                                   onFinish,
-                                  className,
                                   sectors,
                                   friction,
                                   angVelMin,
                                   fontSize,
                                   centerText,
                                   runOnlyOnce,
-                                  spinSize
+                                  spinSize,
+                                  fixedContainerWidth,
+                                  winnerIndex
                               }) {
 
-    return <div className={className}><AutoSizer disableHeight>
+    return <AutoSizer disableHeight>
         {({width}) => (
-            <Canvas width={width} onFinish={onFinish} height={size} sectors={sectors} friction={friction}
+            <Canvas width={fixedContainerWidth ?? width} onFinish={onFinish} height={size} sectors={sectors}
+                    friction={friction}
                     angVelMin={angVelMin}
                     fontSize={fontSize}
                     centerText={centerText}
@@ -26,7 +28,8 @@ export default function Wheel({
                     spinFontSize={spinFontSize}
                     changeTextCenter={changeTextCenter}
                     spinSize={spinSize}
+                    winnerIndex={winnerIndex}
             />
         )}
-    </AutoSizer></div>
+    </AutoSizer>
 }

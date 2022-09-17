@@ -1,6 +1,46 @@
 import {useEffect, useRef, useState} from "react";
 
 const rand = (m, M) => Math.random() * (M - m) + m;
+const compute = (angVelMaxRef, sectors, angVelMin, friction, angleRef, angleVelRef) => {
+    let isAccelerating = true;
+    let finish = false;
+    let result = null;
+    const tot = sectors.length;
+    const PI = Math.PI;
+    const TAU = 2 * PI;
+    const getIndex = () =>
+        Math.floor(tot - (angleRef / TAU) * tot) % tot;
+    while (!finish) {
+        if (angleVelRef >= angVelMaxRef) {
+            isAccelerating = false;
+        }
+        if (isAccelerating) {
+            if (!angleVelRef) angleVelRef = angVelMin;
+            angleVelRef *= 1.06;
+        }
+        else {
+            isAccelerating = false;
+            angleVelRef *= friction;
+
+            if (angleVelRef < angVelMin) {
+                finish = true;
+                angleVelRef = 0;
+                result = (sectors[getIndex()]);
+            }
+        }
+        angleRef += angleVelRef; // Update angle
+        angleRef %= TAU;
+    }
+    return result;
+}
+
+function findAll(start, end, step, sectors, angVelMin, friction, wantedResult, angVel, angVelRef) {
+    for (let accel = start; accel < end; accel += step) {
+        if (compute(accel, sectors, angVelMin, friction, angVel, angVelRef).label === wantedResult.label) {
+            return accel
+        }
+    }
+}
 
 export default function Canvas({
                                    width,
@@ -11,10 +51,15 @@ export default function Canvas({
                                    friction,
                                    angVelMin,
                                    fontSize,
+                                   textAlign = "right",
+                                   innerFontColor = "white",
                                    centerText,
                                    spinFontSize,
+                                   fontFamily = "arial",
+                                   fontColor = "white",
                                    changeTextCenter = true,
-                                   spinSize = 50
+                                   spinSize = 50,
+                                   winnerIndex,
                                }) {
     const canvasRef = useRef(null);
     const spinRef = useRef(null);
@@ -24,6 +69,7 @@ export default function Canvas({
     const isAcceleratingRef = useRef(false);
     const [isSpinning, setIsSpinning] = useState(false);
     const [hasRunOnce, setHasRunOne] = useState(false);
+
     useEffect(() => {
         const canvas = canvasRef.current;
         const scale = window.devicePixelRatio;
@@ -62,9 +108,9 @@ export default function Canvas({
             // TEXT
             ctx.translate(rad, rad);
             ctx.rotate(ang + arc / 2);
-            ctx.textAlign = "right";
-            ctx.fillStyle = "#fff";
-            ctx.font = `bold ${fontSize} sans-serif`;
+            ctx.textAlign = textAlign;
+            ctx.fillStyle = fontColor;
+            ctx.font = `bold ${fontSize} ${fontFamily}`;
             ctx.fillText(sector.label, rad - 10, 10);
             //
             ctx.restore();
@@ -82,6 +128,7 @@ export default function Canvas({
             }
             elSpin.style.height = spinSize + "px";
             elSpin.style.width = spinSize + "px";
+            elSpin.style.color = innerFontColor;
             elSpin.style.background = sector.color;
         };
 
@@ -128,27 +175,34 @@ export default function Canvas({
         return () => {
             cancelAnimationFrame(raf);
         };
-    }, [width, height, isSpinning, onFinish, sectors, fontSize, angVelMin, friction, centerText, spinFontSize, changeTextCenter, spinSize]);
+    }, [width, height, isSpinning, onFinish, sectors, fontSize, angVelMin, friction, centerText, spinFontSize, changeTextCenter, spinSize, fontFamily, textAlign, fontColor, innerFontColor, runOnlyOnce]);
 
     return (
         <>
             <div
                 style={{
                     width,
-                    height,
+                    height: Math.min(height, width),
                     position: "relative",
-                    overflow: "hidden"
+                    overflow: "hidden",
                 }}
             >
                 <canvas id="wheel" ref={canvasRef}/>
                 <button
                     id="spin"
                     ref={spinRef}
+                    style={{
+                        cursor: runOnlyOnce && hasRunOnce ? 'not-allowed' : 'pointer'
+                    }}
                     disabled={isSpinning || (runOnlyOnce && hasRunOnce)}
                     onClick={() => {
                         setIsSpinning(true);
                         setHasRunOne(true);
-                        angVelMaxRef.current = rand(0.25, 0.4);
+                        if (winnerIndex) {
+                            angVelMaxRef.current = findAll(0.15, 0.7, 0.01, sectors, angVelMin, friction, sectors[winnerIndex], angleRef.current, angleVelRef.current)
+                        } else {
+                            angVelMaxRef.current = rand(0.15, 0.7);
+                        }
                         isAcceleratingRef.current = true;
                     }}
                 >
