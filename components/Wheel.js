@@ -13,7 +13,8 @@ export default function Wheel({
                                   centerText,
                                   runOnlyOnce,
                                   spinSize,
-                                  fixedContainerWidth
+                                  fixedContainerWidth,
+                                  winnerIndex
                               }) {
 
     return <AutoSizer disableHeight>
@@ -27,6 +28,7 @@ export default function Wheel({
                     spinFontSize={spinFontSize}
                     changeTextCenter={changeTextCenter}
                     spinSize={spinSize}
+                    winnerIndex={winnerIndex}
             />
         )}
     </AutoSizer>

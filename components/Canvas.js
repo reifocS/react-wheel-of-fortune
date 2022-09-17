@@ -1,6 +1,46 @@
 import {useEffect, useRef, useState} from "react";
 
 const rand = (m, M) => Math.random() * (M - m) + m;
+const compute = (angVelMaxRef, sectors, angVelMin, friction, angleRef, angleVelRef) => {
+    let isAccelerating = true;
+    let finish = false;
+    let result = null;
+    const tot = sectors.length;
+    const PI = Math.PI;
+    const TAU = 2 * PI;
+    const getIndex = () =>
+        Math.floor(tot - (angleRef / TAU) * tot) % tot;
+    while (!finish) {
+        if (angleVelRef >= angVelMaxRef) {
+            isAccelerating = false;
+        }
+        if (isAccelerating) {
+            if (!angleVelRef) angleVelRef = angVelMin;
+            angleVelRef *= 1.06;
+        }
+        else {
+            isAccelerating = false;
+            angleVelRef *= friction;
+
+            if (angleVelRef < angVelMin) {
+                finish = true;
+                angleVelRef = 0;
+                result = (sectors[getIndex()]);
+            }
+        }
+        angleRef += angleVelRef; // Update angle
+        angleRef %= TAU;
+    }
+    return result;
+}
+
+function findAll(start, end, step, sectors, angVelMin, friction, wantedResult, angVel, angVelRef) {
+    for (let accel = start; accel < end; accel += step) {
+        if (compute(accel, sectors, angVelMin, friction, angVel, angVelRef).label === wantedResult.label) {
+            return accel
+        }
+    }
+}
 
 export default function Canvas({
                                    width,
@@ -19,6 +59,7 @@ export default function Canvas({
                                    fontColor = "white",
                                    changeTextCenter = true,
                                    spinSize = 50,
+                                   winnerIndex,
                                }) {
     const canvasRef = useRef(null);
     const spinRef = useRef(null);
@@ -157,7 +198,11 @@ export default function Canvas({
                     onClick={() => {
                         setIsSpinning(true);
                         setHasRunOne(true);
-                        angVelMaxRef.current = rand(0.15, 0.7);
+                        if (winnerIndex) {
+                            angVelMaxRef.current = findAll(0.15, 0.7, 0.01, sectors, angVelMin, friction, sectors[winnerIndex], angleRef.current, angleVelRef.current)
+                        } else {
+                            angVelMaxRef.current = rand(0.15, 0.7);
+                        }
                         isAcceleratingRef.current = true;
                     }}
                 >

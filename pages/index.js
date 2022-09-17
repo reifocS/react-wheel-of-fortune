@@ -9,9 +9,6 @@ function guidGenerator() {
     return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
 }
 
-const nutriscoreToEmoji = {
-    "A": '🍏', "B": '🍝', "C": '🌮', "D": '🍕', "E": '💩'
-}
 const canvasHeight = 300;
 
 function getRandomColor() {
@@ -22,6 +19,7 @@ function getRandomColor() {
     }
     return color;
 }
+
 const colors = ["#00823f", "#86bc2b", "#fecc00", "#ee8200", "#e73c09"];
 const texts = ["Nutri A", "Nutri B", "Nutri C", "Nutri D", "Nutri E"];
 const SECTORS = colors.map((c, i) => ({color: c, label: texts[i], id: guidGenerator()}));
@@ -43,6 +41,7 @@ export default function Home() {
     const [changeTextCenter, setChangeTextCenter] = useState(true);
     const [responsiveC, setResponsiveC] = useState(true);
     const [runOnlyOnce, setRunOnlyOnce] = useState(true);
+    const [winnerIndex, setWinnerIndex] = useState(undefined);
     const [sectors, setSectors] = useState(SECTORS);
 
     function onFinish(res) {
@@ -86,8 +85,20 @@ export default function Home() {
                             value={f.value}
                             key={i}>{f.type}</option>)}
                     </select>
-                    <label htmlFor={"fontSize"}>sectors font size</label>
+                    <label htmlFor={"winnerIndex"}>Cheat mode (winner index)</label>
+                    <select value={winnerIndex}
+                            id={"winnerIndex"}
+                            onChange={(e) => setWinnerIndex(e.target.value)}>
+                        <option
+                            value={undefined}
+                        >Random
+                        </option>
+                        {Array(sectors.length).fill(0).map((_, i) => <option
+                            value={i}
+                            key={i}>{i}</option>)}
+                    </select>
 
+                    <label htmlFor={"fontSize"}>sectors font size</label>
                     <select value={fontSize}
                             id={"fontSize"}
                             onChange={(e) => setFontSize(e.target.value)}>
@@ -125,20 +136,25 @@ export default function Home() {
                            type={"text"} value={centerText}
                            onChange={(e) => setCenter(e.target.value)}/>
                     <label htmlFor={"changeTextCenter"}>Change text center on spin</label>
-                    <input id={"changeTextCenter"} placeholder={"change text"} type={"checkbox"} checked={changeTextCenter}
+                    <input id={"changeTextCenter"} placeholder={"change text"} type={"checkbox"}
+                           checked={changeTextCenter}
                            onChange={(e) => setChangeTextCenter(e.target.checked)}/>
                     <label htmlFor={"responsiveWheel"}>Responsive wheel</label>
-                    <input id={"responsiveWheel"} placeholder={"responsive container"} type={"checkbox"} checked={responsiveC}
+                    <input id={"responsiveWheel"} placeholder={"responsive container"} type={"checkbox"}
+                           checked={responsiveC}
                            onChange={(e) => setResponsiveC(e.target.checked)}/>
                     <label htmlFor={"runOnlyOnce"}>Run only once</label>
-                    <input id={"runOnlyOnce"} placeholder={"responsive container"} type={"checkbox"} checked={runOnlyOnce}
+                    <input id={"runOnlyOnce"} placeholder={"responsive container"} type={"checkbox"}
+                           checked={runOnlyOnce}
                            onChange={(e) => setRunOnlyOnce(e.target.checked)}/>
-                    <ul style={{backgroundColor: "gray",
+                    <ul style={{
+                        backgroundColor: "gray",
                         listStyle: "none",
-                        borderRadius: 6, padding: 4}}>
+                        borderRadius: 6, padding: 4
+                    }}>
                         <label htmlFor={sectors[0].label + '0'}>Sectors</label>
                         {sectors.map((s, i) => <li key={s.id}><input
-                            id={s.label+i}
+                            id={s.label + i}
                             style={{maxWidth: 100}}
                             onChange={(e) => updateSector(e.target.value, s.id)}
                             value={s.label}/>
@@ -162,6 +178,7 @@ export default function Home() {
                            centerText={centerText}
                            changeTextCenter={changeTextCenter}
                            spinSize={spinSize}
+                           winnerIndex={winnerIndex}
                            runOnlyOnce={runOnlyOnce}
                            sectors={sectors} onFinish={onFinish}/>
                 </div>
